@@ -1,0 +1,33 @@
+/Users/sakschav/Documents/medical-ai-platform/venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+Using device: mps
+Train samples: 5216, Val samples: 16
+Test samples: 624
+Classes: ['NORMAL', 'PNEUMONIA']
+Epoch 1/10 - Loss: 0.1227, Val Acc: 0.8125
+  Saved best model (acc=0.8125)
+Epoch 2/10 - Loss: 0.0586, Val Acc: 0.9375
+  Saved best model (acc=0.9375)
+Epoch 3/10 - Loss: 0.0446, Val Acc: 0.6875
+Epoch 4/10 - Loss: 0.0439, Val Acc: 0.9375
+Epoch 5/10 - Loss: 0.0282, Val Acc: 0.9375
+Epoch 6/10 - Loss: 0.0251, Val Acc: 0.8750
+Epoch 7/10 - Loss: 0.0269, Val Acc: 0.5625
+Epoch 8/10 - Loss: 0.0256, Val Acc: 0.6250
+Epoch 9/10 - Loss: 0.0179, Val Acc: 0.9375
+Epoch 10/10 - Loss: 0.0202, Val Acc: 0.6250
+
+Test Accuracy: 0.7308
+
+Classification Report:
+              precision    recall  f1-score   support
+
+      Normal       1.00      0.28      0.44       234
+   Pneumonia       0.70      1.00      0.82       390
+
+    accuracy                           0.73       624
+   macro avg       0.85      0.64      0.63       624
+weighted avg       0.81      0.73      0.68       624
+
+Training plot saved to /Users/sakschav/Documents/medical-ai-platform/docs/training_curves.png
+Model saved to /Users/sakschav/Documents/medical-ai-platform/models/chest_xray_model.pth

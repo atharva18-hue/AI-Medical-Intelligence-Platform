@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced AI Medical Intelligence Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=7">
+</head>
+<body>
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">🩺 Advanced AI Medical Intelligence Platform</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link active" href="/">Analyze</a>
+                <a class="nav-link" href="/history-page">History</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-4 page-header">
+                <h2>Chest X-Ray Disease Detection</h2>
+                <p class="text-muted">Upload a chest X-ray image for AI-powered analysis with Grad-CAM visualization</p>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <!-- upload section -->
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-sm upload-card">
+                    <div class="card-header bg-light">
+                        <strong>Upload Image</strong>
+                    </div>
+                    <div class="card-body">
+                        <form id="uploadForm">
+                            <div class="mb-3">
+                                <label class="form-label">Chest X-ray Image</label>
+                                <input type="file" class="form-control" id="xrayFile" accept="image/*" required>
+                                <div class="form-text">
+                                    Use a real chest X-ray (front view). Random photos may give wrong results.
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Sample Test X-rays</label>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <div class="sample-card border border-success rounded p-2 text-center">
+                                            <img src="/static/demo/NORMAL/demo_normal_0.jpeg" class="img-fluid rounded sample-thumb" alt="Normal sample">
+                                            <button type="button" class="btn btn-sm btn-success w-100 mt-2" onclick="analyzeSample('/static/demo/NORMAL/demo_normal_0.jpeg', 'normal_sample.jpeg')">
+                                                Try Normal
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="sample-card border border-danger rounded p-2 text-center">
+                                            <img src="/static/demo/PNEUMONIA/demo_pneumonia_0.jpeg" class="img-fluid rounded sample-thumb" alt="Pneumonia sample">
+                                            <button type="button" class="btn btn-sm btn-danger w-100 mt-2" onclick="analyzeSample('/static/demo/PNEUMONIA/demo_pneumonia_0.jpeg', 'pneumonia_sample.jpeg')">
+                                                Try Pneumonia
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Patient Notes (optional)</label>
+                                <textarea class="form-control" id="patientNotes" rows="3" placeholder="e.g. fever, cough for 3 days..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100" id="analyzeBtn">
+                                Analyze X-Ray
+                            </button>
+                        </form>
+
+                        <!-- preview -->
+                        <div id="previewArea" class="mt-3 d-none">
+                            <p class="small text-muted mb-1">Preview:</p>
+                            <img id="imagePreview" class="img-fluid rounded border" alt="preview">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- loading spinner -->
+                <div id="loadingSpinner" class="text-center mt-3 d-none">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p class="mt-2">Analyzing... this may take a few seconds</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- results section -->
+        <div class="row justify-content-center mt-4">
+            <div class="col-lg-10">
+                <div id="resultsPanel" class="d-none">
+                    <!-- prediction card -->
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-header">
+                            <strong>Prediction Result</strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-6">
+                                    <h3 id="predClass" class="mb-1">-</h3>
+                                    <p class="text-muted mb-0">Confidence: <span id="predConf">-</span>%</p>
+                                </div>
+                                <div class="col-6">
+                                    <div class="progress mb-1" style="height: 25px;">
+                                        <div id="probNormal" class="progress-bar bg-success" style="width: 0%">Normal</div>
+                                    </div>
+                                    <div class="progress" style="height: 25px;">
+                                        <div id="probPneumonia" class="progress-bar bg-danger" style="width: 0%">Pneumonia</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- gradcam -->
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-header">
+                            <strong>Grad-CAM Heatmap (Explainable AI)</strong>
+                        </div>
+                        <div class="card-body text-center">
+                            <img id="gradcamImg" class="img-fluid rounded border" alt="Grad-CAM heatmap">
+                            <p class="small text-muted mt-2">Red regions = areas that influenced the model's decision</p>
+                        </div>
+                    </div>
+
+                    <!-- report -->
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            <strong>AI Generated Medical Report</strong>
+                        </div>
+                        <div class="card-body">
+                            <pre id="reportText" class="report-box"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center text-muted py-3 mt-4 border-top">
+        <small>Advanced AI Medical Intelligence Platform</small>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

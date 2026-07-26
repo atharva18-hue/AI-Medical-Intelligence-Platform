@@ -1,0 +1,41 @@
+/Users/sakschav/Documents/medical-ai-platform/venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+Using device: mps
+Train samples: 5216, Val samples: 16
+Test samples: 624
+Classes: ['NORMAL', 'PNEUMONIA']
+Class weights: Normal=1.49, Pneumonia=0.51
+Epoch 1/15 - Loss: 0.0893, Val Acc: 0.8750, Test Acc: 0.8910, Test F1: 0.8796
+  Saved best model (score=0.8796)
+Epoch 2/15 - Loss: 0.0416, Val Acc: 0.7500, Test Acc: 0.8285, Test F1: 0.7935
+Epoch 3/15 - Loss: 0.0361, Val Acc: 0.9375, Test Acc: 0.8878, Test F1: 0.8719
+Epoch 4/15 - Loss: 0.0288, Val Acc: 0.9375, Test Acc: 0.8814, Test F1: 0.8642
+Epoch 5/15 - Loss: 0.0246, Val Acc: 0.7500, Test Acc: 0.8381, Test F1: 0.8063
+Epoch 6/15 - Loss: 0.0135, Val Acc: 0.9375, Test Acc: 0.8702, Test F1: 0.8492
+Epoch 7/15 - Loss: 0.0096, Val Acc: 0.9375, Test Acc: 0.8462, Test F1: 0.8173
+Epoch 8/15 - Loss: 0.0091, Val Acc: 1.0000, Test Acc: 0.8462, Test F1: 0.8167
+Epoch 9/15 - Loss: 0.0094, Val Acc: 0.9375, Test Acc: 0.9038, Test F1: 0.8923
+  Saved best model (score=0.8923)
+Epoch 10/15 - Loss: 0.0064, Val Acc: 0.9375, Test Acc: 0.8814, Test F1: 0.8635
+Epoch 11/15 - Loss: 0.0045, Val Acc: 0.9375, Test Acc: 0.8558, Test F1: 0.8302
+Epoch 12/15 - Loss: 0.0033, Val Acc: 0.9375, Test Acc: 0.8734, Test F1: 0.8533
+Epoch 13/15 - Loss: 0.0041, Val Acc: 0.9375, Test Acc: 0.8301, Test F1: 0.7944
+Epoch 14/15 - Loss: 0.0037, Val Acc: 0.9375, Test Acc: 0.8381, Test F1: 0.8057
+Epoch 15/15 - Loss: 0.0024, Val Acc: 0.9375, Test Acc: 0.8333, Test F1: 0.7990
+
+Loaded best checkpoint (test_acc=0.9038461538461539, test_f1=0.8923395445134575)
+
+Test Accuracy: 0.9038
+
+Classification Report:
+              precision    recall  f1-score   support
+
+      Normal       0.97      0.77      0.86       234
+   Pneumonia       0.88      0.98      0.93       390
+
+    accuracy                           0.90       624
+   macro avg       0.92      0.88      0.89       624
+weighted avg       0.91      0.90      0.90       624
+
+Training plot saved to /Users/sakschav/Documents/medical-ai-platform/docs/training_curves.png
+Model saved to /Users/sakschav/Documents/medical-ai-platform/models/chest_xray_model.pth

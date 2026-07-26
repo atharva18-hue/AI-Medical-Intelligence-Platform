@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: medical-ai-platform
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: OMP_NUM_THREADS
+        value: "1"
+      - key: OPENAI_API_KEY
+        sync: false

@@ -1,0 +1,30 @@
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# env
+.env
+
+# data (too big for git)
+data/chest_xray/
+data/predictions.db
+app/uploads/*
+
+# keep sample images and model
+!data/sample_images/
+!models/chest_xray_model.pth
+
+# ide
+.idea/
+.vscode/
+*.swp
+
+# os
+.DS_Store
+
+# notebooks checkpoints
+.ipynb_checkpoints/

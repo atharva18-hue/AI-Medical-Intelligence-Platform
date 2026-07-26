@@ -1,0 +1,14 @@
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.git/
+.env
+*.db
+data/chest_xray/
+app/uploads/
+docs/training_log*.txt
+notebooks/
+ml/download_dataset.py
+*.ipynb
+.DS_Store
