@@ -1,32 +1,29 @@
 // main app js for xray analysis page
 
-document.getElementById('xrayFile').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-            document.getElementById('imagePreview').src = ev.target.result;
-            document.getElementById('previewArea').classList.remove('d-none');
-        };
-        reader.readAsDataURL(file);
-    }
+const SAMPLES = {
+    normal: { url: '/static/demo/NORMAL/demo_normal_0.jpeg', name: 'normal_sample.jpeg' },
+    pneumonia: { url: '/static/demo/PNEUMONIA/demo_pneumonia_0.jpeg', name: 'pneumonia_sample.jpeg' },
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('xrayFile').addEventListener('change', onFileSelected);
+    document.getElementById('uploadForm').addEventListener('submit', onFormSubmit);
+    document.getElementById('tryNormalBtn').addEventListener('click', function() {
+        loadSample('normal');
+    });
+    document.getElementById('tryPneumoniaBtn').addEventListener('click', function() {
+        loadSample('pneumonia');
+    });
 });
 
-// main app js for xray analysis page
-
-document.getElementById('xrayFile').addEventListener('change', function(e) {
+function onFileSelected(e) {
     const file = e.target.files[0];
     if (file) {
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-            document.getElementById('imagePreview').src = ev.target.result;
-            document.getElementById('previewArea').classList.remove('d-none');
-        };
-        reader.readAsDataURL(file);
+        showPreview(file);
     }
-});
+}
 
-document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+async function onFormSubmit(e) {
     e.preventDefault();
     const fileInput = document.getElementById('xrayFile');
     if (!fileInput.files[0]) {
@@ -34,21 +31,50 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
         return;
     }
     await runAnalysis(fileInput.files[0]);
-});
+}
 
-async function analyzeSample(imageUrl, filename) {
+function showPreview(fileOrUrl) {
+    const preview = document.getElementById('imagePreview');
+    if (fileOrUrl instanceof File) {
+        preview.src = URL.createObjectURL(fileOrUrl);
+    } else {
+        preview.src = fileOrUrl;
+    }
+    document.getElementById('previewArea').classList.remove('d-none');
+}
+
+function setFileInput(file) {
+    const fileInput = document.getElementById('xrayFile');
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    fileInput.files = dt.files;
+}
+
+async function loadSample(type) {
+    const sample = SAMPLES[type];
+    const btn = type === 'normal' ? document.getElementById('tryNormalBtn') : document.getElementById('tryPneumoniaBtn');
+
     try {
-        const response = await fetch(imageUrl);
+        btn.disabled = true;
+        btn.textContent = 'Loading...';
+
+        const response = await fetch(sample.url);
+        if (!response.ok) {
+            throw new Error('Sample image not found on server');
+        }
+
         const blob = await response.blob();
-        const file = new File([blob], filename, { type: blob.type || 'image/jpeg' });
+        const file = new File([blob], sample.name, { type: blob.type || 'image/jpeg' });
 
-        // show preview
-        document.getElementById('imagePreview').src = imageUrl;
-        document.getElementById('previewArea').classList.remove('d-none');
-
+        setFileInput(file);
+        showPreview(sample.url);
         await runAnalysis(file);
+
     } catch (err) {
-        alert('Could not load sample image: ' + err.message);
+        alert('Could not load sample: ' + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = type === 'normal' ? 'Try Normal' : 'Try Pneumonia';
     }
 }
 
@@ -57,6 +83,8 @@ async function runAnalysis(file) {
 
     document.getElementById('loadingSpinner').classList.remove('d-none');
     document.getElementById('analyzeBtn').disabled = true;
+    document.getElementById('tryNormalBtn').disabled = true;
+    document.getElementById('tryPneumoniaBtn').disabled = true;
     document.getElementById('resultsPanel').classList.add('d-none');
 
     const formData = new FormData();
@@ -82,6 +110,8 @@ async function runAnalysis(file) {
     } finally {
         document.getElementById('loadingSpinner').classList.add('d-none');
         document.getElementById('analyzeBtn').disabled = false;
+        document.getElementById('tryNormalBtn').disabled = false;
+        document.getElementById('tryPneumoniaBtn').disabled = false;
     }
 }
 
@@ -94,7 +124,6 @@ function showResults(data) {
 
     document.getElementById('predConf').textContent = data.confidence;
 
-    // update progress bars
     const normalProb = data.probabilities.Normal || 0;
     const pneumoniaProb = data.probabilities.Pneumonia || 0;
     document.getElementById('probNormal').style.width = normalProb + '%';
@@ -102,11 +131,9 @@ function showResults(data) {
     document.getElementById('probPneumonia').style.width = pneumoniaProb + '%';
     document.getElementById('probPneumonia').textContent = 'Pneumonia ' + pneumoniaProb + '%';
 
-    // gradcam
     if (data.gradcam_image) {
         document.getElementById('gradcamImg').src = 'data:image/png;base64,' + data.gradcam_image;
     }
 
-    // report
     document.getElementById('reportText').textContent = data.report;
 }
