@@ -6,7 +6,7 @@ A web-based application that analyzes chest X-ray images to detect **Normal** vs
 
 ---
 
-## project live URL
+## Live URl
 https://medical-ai-platform-0ohx.onrender.com/
 
 ------
