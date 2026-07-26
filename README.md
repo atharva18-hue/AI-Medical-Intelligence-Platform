@@ -175,7 +175,7 @@ Grad-CAM is applied on the last convolutional block (`layer4`) to highlight regi
 
 ## Limitations & Disclaimer
 
-⚠️ This project is for **educational and research purposes only**.  
+ This project is for **educational and research purposes only**.  
 It is NOT a substitute for professional medical diagnosis. Always consult a qualified doctor.
 
 ---
@@ -183,7 +183,7 @@ It is NOT a substitute for professional medical diagnosis. Always consult a qual
 ## Author
 
 **Atharva Chavhan**  
-Sipna college of engineering Amravati 
+Sipna college of engineering and technology Amravati 
 atharvachavhan18@gmail.com
 
 ---
